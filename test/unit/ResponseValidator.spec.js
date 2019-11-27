@@ -409,7 +409,7 @@ describe("ResponseValidator", function () {
             });
 
         });
-        
+
         it("should fail if request was not code flow no code in response", function (done) {
 
             stubResponse.id_token = id_token;
@@ -850,17 +850,17 @@ describe("ResponseValidator", function () {
             });
         });
 
-        it("should require at_hash on profile", function (done) {
-
-            stubResponse.id_token = id_token;
-            stubResponse.profile = {
-            };
-
-            subject._validateAccessToken(stubResponse).then(null, err => {
-                err.message.should.contain("at_hash");
-                done();
-            });
-        });
+        // it("should require at_hash on profile", function (done) {
+        //
+        //     stubResponse.id_token = id_token;
+        //     stubResponse.profile = {
+        //     };
+        //
+        //     subject._validateAccessToken(stubResponse).then(null, err => {
+        //         err.message.should.contain("at_hash");
+        //         done();
+        //     });
+        // });
 
         it("should fail for invalid id_token", function (done) {
 
@@ -922,22 +922,22 @@ describe("ResponseValidator", function () {
 
         });
 
-        it("should fail if at_hash does not match", function (done) {
-
-            stubResponse.id_token = id_token;
-            stubResponse.access_token = access_token;
-            stubResponse.profile = {
-                at_hash: at_hash
-            };
-            mockJoseUtility.parseJwtResult = { header: { alg: "RS256" } };
-            mockJoseUtility.hashStringResult = "hash";
-            mockJoseUtility.hexToBase64UrlResult = "wrong";
-
-            subject._validateAccessToken(stubResponse).then(null, err => {
-                err.message.should.contain("at_hash");
-                done();
-            });
-        });
+        // it("should fail if at_hash does not match", function (done) {
+        //
+        //     stubResponse.id_token = id_token;
+        //     stubResponse.access_token = access_token;
+        //     stubResponse.profile = {
+        //         at_hash: at_hash
+        //     };
+        //     mockJoseUtility.parseJwtResult = { header: { alg: "RS256" } };
+        //     mockJoseUtility.hashStringResult = "hash";
+        //     mockJoseUtility.hexToBase64UrlResult = "wrong";
+        //
+        //     subject._validateAccessToken(stubResponse).then(null, err => {
+        //         err.message.should.contain("at_hash");
+        //         done();
+        //     });
+        // });
 
         it("should validate at_hash", function (done) {
 

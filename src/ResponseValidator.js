@@ -12,9 +12,9 @@ const ProtocolClaims = ["nonce", "at_hash", "iat", "nbf", "exp", "aud", "iss", "
 
 export class ResponseValidator {
 
-    constructor(settings, 
+    constructor(settings,
         MetadataServiceCtor = MetadataService,
-        UserInfoServiceCtor = UserInfoService, 
+        UserInfoServiceCtor = UserInfoService,
         joseUtil = JoseUtil,
         TokenClientCtor = TokenClient) {
         if (!settings) {
@@ -194,7 +194,7 @@ export class ResponseValidator {
                 else if (result[name] !== value) {
                     if (typeof value === 'object') {
                         result[name] = this._mergeClaims(result[name], value);
-                    } 
+                    }
                     else {
                         result[name] = [result[name], value];
                     }
@@ -256,9 +256,9 @@ export class ResponseValidator {
         if (state.extraTokenParams && typeof(state.extraTokenParams) === 'object') {
             Object.assign(request, state.extraTokenParams);
         }
-        
+
         return this._tokenClient.exchangeCode(request).then(tokenResponse => {
-            
+
             for(var key in tokenResponse) {
                 response[key] = tokenResponse[key];
             }
@@ -270,7 +270,7 @@ export class ResponseValidator {
             else {
                 Log.debug("ResponseValidator._processCode: token response successful, returning response");
             }
-            
+
             return response;
         });
     }
@@ -283,7 +283,7 @@ export class ResponseValidator {
             Log.debug("ResponseValidator._validateIdTokenAttributes: Validaing JWT attributes; using clock skew (in seconds) of: ", clockSkewInSeconds);
 
             return this._joseUtil.validateJwtAttributes(response.id_token, issuer, audience, clockSkewInSeconds).then(payload => {
-            
+
                 if (state.nonce && state.nonce !== payload.nonce) {
                     Log.error("ResponseValidator._validateIdTokenAttributes: Invalid nonce in id_token");
                     return Promise.reject(new Error("Invalid nonce in id_token"));
@@ -414,10 +414,10 @@ export class ResponseValidator {
             return Promise.reject(new Error("No profile loaded from id_token"));
         }
 
-        if (!response.profile.at_hash) {
-            Log.error("ResponseValidator._validateAccessToken: No at_hash in id_token");
-            return Promise.reject(new Error("No at_hash in id_token"));
-        }
+        // if (!response.profile.at_hash) {
+        //     Log.error("ResponseValidator._validateAccessToken: No at_hash in id_token");
+        //     return Promise.reject(new Error("No at_hash in id_token"));
+        // }
 
         if (!response.id_token) {
             Log.error("ResponseValidator._validateAccessToken: No id_token");
@@ -448,19 +448,19 @@ export class ResponseValidator {
             return Promise.reject(new Error("Unsupported alg: " + hashAlg));
         }
 
-        let sha = "sha" + hashBits;
-        var hash = this._joseUtil.hashString(response.access_token, sha);
-        if (!hash) {
-            Log.error("ResponseValidator._validateAccessToken: access_token hash failed:", sha);
-            return Promise.reject(new Error("Failed to validate at_hash"));
-        }
+        // let sha = "sha" + hashBits;
+        // var hash = this._joseUtil.hashString(response.access_token, sha);
+        // if (!hash) {
+        //     Log.error("ResponseValidator._validateAccessToken: access_token hash failed:", sha);
+        //     return Promise.reject(new Error("Failed to validate at_hash"));
+        // }
 
-        var left = hash.substr(0, hash.length / 2);
-        var left_b64u = this._joseUtil.hexToBase64Url(left);
-        if (left_b64u !== response.profile.at_hash) {
-            Log.error("ResponseValidator._validateAccessToken: Failed to validate at_hash", left_b64u, response.profile.at_hash);
-            return Promise.reject(new Error("Failed to validate at_hash"));
-        }
+        // var left = hash.substr(0, hash.length / 2);
+        // var left_b64u = this._joseUtil.hexToBase64Url(left);
+        // if (left_b64u !== response.profile.at_hash) {
+        //     Log.error("ResponseValidator._validateAccessToken: Failed to validate at_hash", left_b64u, response.profile.at_hash);
+        //     return Promise.reject(new Error("Failed to validate at_hash"));
+        // }
 
         Log.debug("ResponseValidator._validateAccessToken: success");
 
